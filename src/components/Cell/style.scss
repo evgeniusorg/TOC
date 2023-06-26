@@ -1,0 +1,65 @@
+.cell {
+  box-sizing: border-box;
+  text-align: left;
+  padding: 8px 22px 8px 0px;
+  text-decoration: none;
+  display: flex;
+  align-items: center;
+  box-sizing: border-box;
+  border: 1px solid rgba(0,0,0,0);
+  cursor: pointer;
+
+  &:focus {
+    outline: none;
+    border: 1px solid var(--focus);
+  }
+
+  &:hover {
+    background: var(--cell-hover);
+  }
+
+  &__list {
+    overflow: hidden;
+    max-height: 0;
+    transition: max-height .4s ease 0s;
+  }
+
+  &__list_is-open {
+    max-height: 1000rem;
+    transition: max-height 2s ease 0s;
+  }
+
+  &__link {
+    font-size: 13px;
+    font-weight: 400;
+    line-height: 20px;
+    letter-spacing: 0.0045em;
+    text-decoration: none;
+    color: var(--text-color);
+  }
+
+  &__down-icon {
+    fill: var(--cell-icon);
+    margin-right: 8px;
+    transition: all 0.1s ease 0.1s;
+    min-width: 16px;
+
+    &_active {
+      transform: rotate(90deg);
+    }
+  }
+
+  &__empty-icon {
+    min-width: 24px;
+  }
+
+  &__block_active {
+    background: var(--cell-block-active);
+  }
+
+  &__subblock_active {
+    background: var(--cell-subblock-active);
+  }
+}
+
+

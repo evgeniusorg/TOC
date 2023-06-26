@@ -1,0 +1,31 @@
+.header {
+  display: flex;
+  justify-content: space-between;
+  align-items: center;
+  padding: 23px 22px 25px;
+  background: var(--header-background);
+  color: var(--header-color);
+
+  &__title {
+    font-size: 17px;
+    line-height: 24px;
+    font-weight: 600;
+    margin: 0;
+  }
+
+  &__theme {
+    display: flex;
+    justify-content: flex-start;
+    min-width: 100px;
+  }
+
+  &__link {
+    cursor: pointer;
+    margin-left: 8px;
+    border-bottom: 1px solid var(--header-color);
+
+    &:hover {
+      border-bottom: 1px solid var(--header-background);
+    }
+  }
+}

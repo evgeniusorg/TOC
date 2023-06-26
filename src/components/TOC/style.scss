@@ -1,0 +1,27 @@
+.toc {
+  border-right: 1px solid var(--border-color);
+  width: 284px;
+  min-height: 100vh;
+  padding: 24px 0;
+  box-sizing: border-box;
+}
+
+.toc__input {
+  width: calc(100% - 44px);
+  border: 1px solid var(--border-color);
+  font-size: 14px;
+  padding: 8px;
+  box-sizing: border-box;
+  margin: 0 22px 48px;
+  background: var(--background-color);
+  color: var(--text-color);
+
+  &:focus {
+    outline: none;
+    border: 1px solid var(--focus);
+  }
+}
+
+.toc__list {
+
+}
