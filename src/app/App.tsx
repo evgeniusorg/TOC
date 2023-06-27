@@ -2,7 +2,7 @@ import React, { useCallback, useEffect, useState } from 'react';
 import { Theme } from './constants';
 import { Header } from '../components/Header/Header';
 import { Toc } from '../components/TOC/Toc';
-import { getTree } from '../helpers/helpers';
+import { getParsingData } from '../helpers/helpers';
 import { Main } from '../components/Main/Main';
 import { Anchors } from '../components/Anchors/Ancors';
 import { ApiAnchor, Page } from './types';
@@ -25,17 +25,22 @@ function App() {
   useEffect(() => {
     // load data from json
     const getData = async () => {
-      const response = await fetch('./data.json');
-      if (response.ok) {
-        const responseData = await response.json();
-        // parsing of data
-        const [newTree, activePageAnchors] = getTree(responseData, activePageUrl);
+      try {
+        const response = await fetch('./data.json');
+        if (response.ok) {
+          const responseData = await response.json();
+          // parsing of data
+          const [newTree, activePageAnchors] = getParsingData(responseData, activePageUrl);
 
-        setTree(newTree);
-        setAnchors(activePageAnchors);
+          setTree(newTree);
+          setAnchors(activePageAnchors);
+          setIsLoading(false);
+        } else {
+          throw new Error(response.statusText);
+        }
+      } catch(error) {
         setIsLoading(false);
-      } else {
-        console.log(response.statusText);
+        console.error(error);
       }
     };
 

@@ -1,9 +1,9 @@
-import { Page, Anchor, ApiResponse } from '../app/types';
+import {Page, Anchor, ApiResponse} from '../app/types';
 
 // create tree from api data
-export const getTree = (tree: ApiResponse, activePageUrl: string): [Page[], Anchor[]] => {
-  const pages = tree.entities.pages;
-  const anchors = tree.entities.anchors;
+export const getParsingData = (tree: ApiResponse, activePageUrl: string): [Page[], Anchor[]] => {
+  const pages = tree.entities.pages || {};
+  const anchors = tree.entities.anchors || {};
   let topLevelIds = tree.topLevelIds;
   let activePageAnchors: Anchor[] = [];
 
@@ -56,8 +56,8 @@ export const getTree = (tree: ApiResponse, activePageUrl: string): [Page[], Anch
 };
 
 // look for search string to title
-const checkPageTitle = (title: string, search: string): boolean => {
-  return title.toLowerCase().indexOf(search) !== -1;
+export const checkPageTitle = (title: string, search: string): boolean => {
+  return title.toLowerCase().indexOf(search.toLowerCase()) !== -1;
 }
 
 // pages filter by search string in title
@@ -68,10 +68,10 @@ export const getFilterTree = (tree: Page[], search: string): Page[] => {
 
     if (isPageChosen) {
       // if title of page includes search string, select page with all sub-pages
-      newTree.push(page);
+      newTree.push({ ...page, isOpen: false });
     } else if (filteredChildren.length > 0) {
       // if some sub-page titles include search string, select only these pages with current page
-      newTree.push({ ...page, pages: filteredChildren });
+      newTree.push({ ...page, isOpen: false, pages: filteredChildren });
     }
 
     return newTree;

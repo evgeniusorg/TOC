@@ -26,8 +26,8 @@ export interface Anchor extends ApiAnchor {}
 
 export interface ApiResponse {
   entities: {
-    pages: Record<string, ApiPage>;
-    anchors: Record<string, ApiAnchor>;
+    pages?: Record<string, ApiPage>;
+    anchors?: Record<string, ApiAnchor>;
   };
   topLevelIds: string[];
 }

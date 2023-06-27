@@ -49,14 +49,17 @@ const TocComponent: FC<TocProps> = ({ isLoading, tree, onSetIsLoading }) => {
 
   return (
     <div className="toc">
-      <input className="toc__input" placeholder="Search" onChange={onChangeSearch} value={search} />
+      <input className="toc__input" name="search" placeholder="Search" onChange={onChangeSearch} value={search} />
 
       {isLoading
-        ? <div className="toc_loading">
+        ? <div className="toc__loading">
           {SKELETONS.map((width, index) => (<Skeleton width={width} key={index} />))}
         </div>
         : <div className="toc__list">
-          {sortedTree.map((page: Page ) => (<Cell key={page.id} page={page} />)) }
+          {sortedTree.length
+            ? sortedTree.map((page: Page ) => (<Cell key={page.id} page={page} />))
+            : <div className="toc__list_empty">Nothing found</div>
+          }
         </div>
       }
     </div>
