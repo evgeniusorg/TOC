@@ -1,10 +1,13 @@
-import { Page } from "../app/types";
+import { Page, Anchor, ApiResponse } from '../app/types';
 
-// формируем дерево из входящих данных
-export const getTree = (data: any): Page[] => {
-  const pages = data.entities.pages;
-  let topLevelIds = data.topLevelIds;
+// create tree from api data
+export const getTree = (tree: ApiResponse, activePageUrl: string): [Page[], Anchor[]] => {
+  const pages = tree.entities.pages;
+  const anchors = tree.entities.anchors;
+  let topLevelIds = tree.topLevelIds;
+  let activePageAnchors: Anchor[] = [];
 
+  // create top level pages list
   if (!topLevelIds.length) {
     for (let key in pages) {
       if (pages[key].level === 0) {
@@ -14,40 +17,60 @@ export const getTree = (data: any): Page[] => {
   }
 
   const getPages = (keys: string[]): Page[] => {
-    const arr: any = [];
+    const tree: Page[] = [];
     for (let key of keys) {
-      const item = pages[key];
-      if (pages[key].pages) {
-        item.pages = getPages(pages[key].pages);
+      const page = pages[key] as Page;
+
+      // pick page as active, if urls are equal
+      if (page.url === activePageUrl) {
+        page.isActive = true;
       }
-      arr.push(item as Page);
+
+      // if page is active, select anchors for this page
+      if (page.isActive && pages[key].anchors) {
+        activePageAnchors = (pages[key].anchors as string[]).map((anchor_id) => anchors[anchor_id]).filter(Boolean);
+      }
+
+      page.pagesCount = 1;
+
+      // if page has sub-pages, set sub-pages data to tree
+      if (pages[key].pages) {
+        page.pages = getPages(pages[key].pages as string[]);
+        page.pagesCount = page.pages.reduce((acc, page) => acc + page.pagesCount, 0);
+
+        // check open or active sub-pages
+        if (page.pages.find((subPage) => subPage.isActive || subPage.isOpen)) {
+          page.isOpen = true;
+        }
+      }
+
+      tree.push(page as Page);
     }
 
-    arr.sort((a: Page, b: Page) => a.tabIndex - b.tabIndex);
-
-    return arr;
+    return tree;
   }
 
-  const tree = getPages(topLevelIds);
-  return tree;
+  const parsedTree = getPages(topLevelIds);
+
+  return [parsedTree, activePageAnchors];
 };
 
-// ищем в title искомую строку
+// look for search string to title
 const checkPageTitle = (title: string, search: string): boolean => {
   return title.toLowerCase().indexOf(search) !== -1;
 }
 
-// фильтруем pages по искомой строке в title
-export const filterTree = (tree: Page[], search: string): Page[] => {
+// pages filter by search string in title
+export const getFilterTree = (tree: Page[], search: string): Page[] => {
   return tree.reduce((newTree: Page[], page: Page): Page[] => {
     const isPageChosen = checkPageTitle(page.title, search);
-    const filteredChildren = filterTree(page.pages || [], search);
+    const filteredChildren = getFilterTree(page.pages || [], search);
 
     if (isPageChosen) {
-      // если совпадение в самой page, то копируем page со всеми children
+      // if title of page includes search string, select page with all sub-pages
       newTree.push(page);
     } else if (filteredChildren.length > 0) {
-      // если есть совпадение в children, то копируем page только с совпадающими children
+      // if some sub-page titles include search string, select only these pages with current page
       newTree.push({ ...page, pages: filteredChildren });
     }
 

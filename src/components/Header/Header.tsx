@@ -1,6 +1,7 @@
-import React, {FC, memo} from 'react';
+import React, { FC, memo } from 'react';
+import { Theme } from '../../app/constants';
+
 import './style.scss';
-import {Theme} from "../../app/constants";
 
 type Props = {
   theme: Theme;

@@ -14,19 +14,10 @@
     border: 1px solid var(--focus);
   }
 
-  &:hover {
-    background: var(--cell-hover);
-  }
-
   &__list {
     overflow: hidden;
     max-height: 0;
-    transition: max-height .4s ease 0s;
-  }
-
-  &__list_is-open {
-    max-height: 1000rem;
-    transition: max-height 2s ease 0s;
+    transition: max-height .3s ease;
   }
 
   &__link {
@@ -41,7 +32,7 @@
   &__down-icon {
     fill: var(--cell-icon);
     margin-right: 8px;
-    transition: all 0.1s ease 0.1s;
+    transition: all 0.3s ease;
     min-width: 16px;
 
     &_active {
@@ -59,6 +50,22 @@
 
   &__subblock_active {
     background: var(--cell-subblock-active);
+  }
+
+  &_active {
+    background: var(--cell-active);
+
+    .cell__link {
+      color: var(--white);
+    }
+  }
+
+  &:hover {
+    background: var(--cell-hover);
+
+    .cell__link {
+      color: var(--text-color);
+    }
   }
 }
 

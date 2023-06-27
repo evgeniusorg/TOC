@@ -1,0 +1,29 @@
+.skeleton {
+  background: var(--skeleton-backbroud);
+  position: relative;
+  overflow: hidden;
+
+  &:after {
+    content: '';
+    position: absolute;
+    top: 0;
+    left: -40px;
+    width: 30px;
+    height: 100%;
+    background: var(--skeleton-highlight);
+    opacity: 0.4;
+    box-shadow: 0 0 15px var(--skeleton-highlight);
+    transform: skewX(-35deg);
+    animation: move-light 1.4s infinite;
+  }
+
+  @keyframes move-light {
+    from {
+      left: -40px;
+    }
+
+    to {
+      left: calc(100% + 40px);
+    }
+  }
+}

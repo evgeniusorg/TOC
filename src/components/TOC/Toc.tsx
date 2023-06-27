@@ -1,58 +1,50 @@
-import React, {FC, useEffect, useState} from 'react';
-import './style.scss';
-import {filterTree, getTree} from "../../helpers/helpers";
+import React, { FC, memo, useEffect, useState } from 'react';
+import { getFilterTree } from '../../helpers/helpers';
 import { Page } from '../../app/types';
 import { Cell } from '../Cell/Cell';
+import { Skeleton } from '../Skeleton/Skeleton';
+import { SKELETONS, DEBOUNCE_DELAY, SEARCH_MIN_LENGTH } from './constants';
+
+import './style.scss';
 
 let searchTimeoutId: ReturnType<typeof setTimeout>;
 
-export const Toc: FC = () => {
-  const [fullData, setFullData] = useState<Page[]>([]);
-  const [data, setData] = useState<Page[]>([]);
+type TocProps = {
+  tree: Page[],
+  isLoading: boolean;
+  onSetIsLoading: (val: boolean) => void;
+};
+
+const TocComponent: FC<TocProps> = ({ isLoading, tree, onSetIsLoading }) => {
+  const [sortedTree, setSortedTree] = useState<Page[]>(tree);
   const [search, setSearch] = useState<string>('');
-  const [isLoading, setIsLoading] = useState(true);
 
-  useEffect(() => {
-    // загружаем данные
-    const getData = async () => {
-      const response = await fetch('./data.json');
-      if (response.ok) {
-          const responseData = await response.json();
-          const tree = getTree(responseData);
-          setFullData(tree);
-          setData(tree);
-          setIsLoading(false);
-      } else {
-        console.log(response.statusText);
-      }
-    };
+  useEffect(() => setSortedTree(tree), [tree]);
 
-    getData();
-  }, []);
-
-  const searchFn = (value: string) => {
+  const onFilterTree = (value: string) => {
     const clearSearch = value.trim().toLowerCase();
 
-    if (clearSearch.length < 3) {
-      setData(fullData);
-      setIsLoading(false);
+    if (clearSearch.length < SEARCH_MIN_LENGTH) {
+      setSortedTree(tree);
+      onSetIsLoading(false);
       return;
     }
 
-    setData(filterTree(fullData, clearSearch));
-    setIsLoading(false);
+    setSortedTree(getFilterTree(tree, clearSearch));
+    onSetIsLoading(false);
   }
 
   const onChangeSearch = (event: React.ChangeEvent<HTMLInputElement>) => {
     const value = event.currentTarget.value;
     setSearch(value);
-    setIsLoading(true);
+    onSetIsLoading(true);
 
     if (searchTimeoutId) {
       clearTimeout(searchTimeoutId);
     }
 
-    searchTimeoutId = setTimeout(() => searchFn(value), 1500);
+    // debounce for filter of tree
+    searchTimeoutId = setTimeout(() => onFilterTree(value), DEBOUNCE_DELAY);
   }
 
   return (
@@ -60,11 +52,15 @@ export const Toc: FC = () => {
       <input className="toc__input" placeholder="Search" onChange={onChangeSearch} value={search} />
 
       {isLoading
-        ? <div>loading...</div>
+        ? <div className="toc_loading">
+          {SKELETONS.map((width, index) => (<Skeleton width={width} key={index} />))}
+        </div>
         : <div className="toc__list">
-          {data.map((item: Page ) => (<Cell key={item.id} data={item} />)) }
+          {sortedTree.map((page: Page ) => (<Cell key={page.id} page={page} />)) }
         </div>
       }
     </div>
   );
 };
+
+export const Toc = memo(TocComponent);

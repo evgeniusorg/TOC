@@ -1,8 +1,9 @@
 .toc {
   border-right: 1px solid var(--border-color);
   width: 284px;
+  min-width: 284px;
   min-height: 100vh;
-  padding: 24px 0;
+  padding: 40px 0;
   box-sizing: border-box;
 }
 
@@ -22,6 +23,10 @@
   }
 }
 
-.toc__list {
+.toc_loading {
+  padding: 0 22px;
 
+  .skeleton {
+    margin-bottom: 14px;
+  }
 }

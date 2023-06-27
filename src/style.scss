@@ -1,0 +1,40 @@
+:root {
+  --white: #ffffff;
+  --text-color: #343434;
+  --background-color: var(--white);
+  --header-background: #27282C;
+  --header-color: var(--white);
+  --border-color: rgba(39, 40, 44, 0.2);
+  --cell-hover: #19191C0D;
+  --cell-active: #307FFF;
+  --cell-icon: #19191C;
+  --cell-block-active: #F9F9F9;
+  --cell-subblock-active: #F4F4F4;
+  --focus: #307FFF;
+  --skeleton-backbroud: #F4F4F4;
+  --skeleton-highlight: var(--background-color);
+}
+
+.dark {
+  --background-color: #19191C;
+  --text-color: var(--white);
+  --border-color: rgb(201 205 220 / 20%);
+  --cell-hover: #FFFFFF0D;
+  --cell-icon: var(--white);
+  --cell-block-active: #1F1F21;
+  --cell-subblock-active: #252527;
+  --skeleton-backbroud: #252527;
+  --skeleton-highlight: var(--background-color);
+}
+
+@font-face {
+  font-family: "JetBrains Sans";
+  src: url("./static/fonts/JetBrainsSans.woff2") format("woff");
+}
+
+body {
+  margin: 0;
+  padding: 0;
+  font-family: JetBrains Sans,Helvetica,Arial,sans-serif;
+  outline: none;
+}

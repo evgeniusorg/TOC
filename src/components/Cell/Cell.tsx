@@ -1,37 +1,53 @@
-import React, {FC, useMemo, useRef, useState, memo} from 'react';
-import './style.scss';
+import React, { FC, useMemo, useRef, useState, memo, MouseEvent } from 'react';
 import { Page } from '../../app/types';
 
+import './style.scss';
+
 type CellProps = {
-  data: Page;
+  page: Page;
 }
 
-const CellContainer: FC<CellProps> = ({ data }) => {
-  const [isOpen, setIsOpen] = useState(false);
+const CellContainer: FC<CellProps> = ({ page }) => {
+  const [isOpen, setIsOpen] = useState<boolean>(Boolean(page.isOpen));
   const ref = useRef<HTMLAnchorElement>(null);
 
-  const onOpenClick = (event: any) => {
+  const onOpenClick = (event: MouseEvent<HTMLAnchorElement>) => {
      if (!ref.current) {
        return;
      }
 
+     // remove focus
      ref.current.blur();
-     let parent = ref.current.parentElement;
 
-    if (data.pages) {
+    if (page.pages) {
       event.preventDefault();
       setIsOpen(!isOpen);
     }
   }
 
-  const cellStyle = useMemo(() => ({ 'paddingLeft': data.level * 16 + 22 + 'px' }), []);
-  const isOpenBackgroundColor = isOpen ? data.level % 2 === 0 ? 'cell__block_active' : 'cell__subblock_active' : '';
+  // left padding for page level
+  const cellStyle = useMemo(() => ({ 'paddingLeft': page.level * 16 + 22 + 'px' }), []);
+
+  // calc max height for sub-pages list
+  const listStyle = useMemo(() => ({ 'maxHeight': isOpen ? 2 * 38 * page.pagesCount + 'px' : ''}), [isOpen])  ;
+
+  // calc background color for opened list
+  const isOpenBackgroundColor = isOpen ? page.level % 2 === 0 ? 'cell__block_active' : 'cell__subblock_active' : '';
 
   return (
     <div className={`cell__block ${isOpenBackgroundColor}`}>
-      <a className="cell" style={cellStyle} href={data.url} ref={ref} onClick={onOpenClick}>
-        {data.pages ?
-          <svg className={`cell__down-icon ${isOpen ? 'cell__down-icon_active' : ''}`} width="16" height="16" viewBox="0 0 16 16" fill="none" xmlns="http://www.w3.org/2000/svg">
+      <a
+        className={`cell ${page.isActive ? 'cell_active' : '' }`}
+        style={cellStyle}
+        href={page.url}
+        ref={ref}
+        onClick={onOpenClick}
+      >
+        {page.pages ?
+          <svg
+            className={`cell__down-icon ${isOpen ? 'cell__down-icon_active' : ''}`}
+            width="16" height="16" viewBox="0 0 16 16" fill="none" xmlns="http://www.w3.org/2000/svg"
+          >
             <path
               fillRule="evenodd"
               clipRule="evenodd"
@@ -39,11 +55,11 @@ const CellContainer: FC<CellProps> = ({ data }) => {
             />
           </svg> : <div className="cell__empty-icon"></div>
         }
-        <div className="cell__link" >{data.title}</div>
+        <div className="cell__link" >{page.title}</div>
       </a>
 
-      <div className={`cell__list ${isOpen ? 'cell__list_is-open' : ''}`}>
-        {data.pages && data.pages.map((item: Page) => (<Cell key={item.id} data={item} />))}
+      <div className="cell__list" style={listStyle}>
+        {page.pages && (page.pages).map((item: Page) => (<Cell key={item.id} page={item} />))}
       </div>
     </div>
   );

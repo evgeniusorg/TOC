@@ -1,0 +1,42 @@
+.anchors {
+  min-width: 295px;
+  padding: 40px 81px 40px 0;
+  box-sizing: border-box;
+
+  &__title {
+    font-size: 13px;
+    font-weight: 700;
+    line-height: 20px;
+    margin-bottom: 15px;
+  }
+
+  &__content {
+    border-left: 1px solid var(--border-color);
+  }
+
+  &__link {
+    cursor: pointer;
+    font-size: 13px;
+    font-weight: 400;
+    line-height: 20px;
+    padding: 8px 16px;
+    color: var(--text-color);
+    box-sizing: border-box;
+    width: 213px;
+    position: relative;
+
+    &:hover {
+      background: var(--cell-hover);
+    }
+
+    &_active:after {
+      content: '';
+      position: absolute;
+      width: 2px;
+      height: 100%;
+      background: var(--cell-active);
+      left: 0;
+      top: 0;
+    }
+  }
+}
