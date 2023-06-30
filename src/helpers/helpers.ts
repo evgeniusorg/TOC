@@ -63,14 +63,15 @@ export const checkPageTitle = (title: string, search: string): boolean => {
 // pages filter by search string in title
 export const getFilterTree = (tree: Page[], search: string): Page[] => {
   return tree.reduce((newTree: Page[], page: Page): Page[] => {
-    const isPageChosen = checkPageTitle(page.title, search);
-    const filteredChildren = getFilterTree(page.pages || [], search);
-
-    if (isPageChosen) {
-      // if title of page includes search string, select page with all sub-pages
+    // if title of page includes search string, select page with all sub-pages
+    if (checkPageTitle(page.title, search)) {
       newTree.push({ ...page, isOpen: false });
-    } else if (filteredChildren.length > 0) {
-      // if some sub-page titles include search string, select only these pages with current page
+      return newTree;
+    }
+
+    // if some sub-page titles include search string, select only these pages with current page
+    const filteredChildren = getFilterTree(page.pages || [], search);
+    if (filteredChildren.length > 0) {
       newTree.push({ ...page, isOpen: false, pages: filteredChildren });
     }
 
