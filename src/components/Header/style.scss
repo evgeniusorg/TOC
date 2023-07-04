@@ -5,6 +5,11 @@
   padding: 23px 22px 25px;
   background: var(--header-background);
   color: var(--header-color);
+  position: fixed;
+  top: 0;
+  width: 100%;
+  box-sizing: border-box;
+  z-index: 3;
 
   &__title {
     font-size: 17px;

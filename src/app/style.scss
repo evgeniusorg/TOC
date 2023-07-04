@@ -4,6 +4,8 @@
   color: var(--text-color);
   min-height: 100vh;
   min-width: 900px;
+  padding-top: 72px;
+  position: relative;
 
   &__content {
     display: flex;

@@ -1,4 +1,4 @@
-import React, { FC, memo, MouseEvent, useEffect, useState } from 'react';
+import React, {FC, memo, MouseEvent, useEffect, useRef, useState} from 'react';
 import { Anchor } from '../../app/types';
 
 import './style.scss';
@@ -9,6 +9,7 @@ type AnchorsProps = {
 
 const AnchorsContainer: FC<AnchorsProps> = ({ anchors }) => {
   const [active, setActive] = useState('');
+  const observer = useRef<IntersectionObserver | null>(null);
 
   useEffect(() => {
     // select first anchor
@@ -16,6 +17,26 @@ const AnchorsContainer: FC<AnchorsProps> = ({ anchors }) => {
       setActive(anchors[0].anchor);
     }
   }, [anchors]);
+
+  useEffect(() => {
+    const handleObsever = (entries: any) => {
+      entries.forEach((entry: any) => {
+        if (entry?.isIntersecting && entry?.target?.id) {
+          console.log(entry)
+          setActive(entry.target.id);
+        }
+      })
+    }
+
+    observer.current = new IntersectionObserver(handleObsever, {
+      rootMargin: "-20% 0% -35% 0px"}
+    )
+
+    const elements = document.querySelectorAll("h1, h2, h3, h4");
+    elements.forEach((elem) => observer.current?.observe(elem))
+
+    return () => observer.current?.disconnect();
+  }, [])
 
   const onClick = (event: MouseEvent<HTMLDivElement>, anchorId: string) => {
     event.preventDefault();
@@ -31,7 +52,7 @@ const AnchorsContainer: FC<AnchorsProps> = ({ anchors }) => {
   return (
     <div className="anchors">
       {!!anchors.length &&
-        <>
+        <div className="anchors__container">
           <div className="anchors__title">On this page:</div>
           <div className="anchors__content">
             {anchors.map((anchor) => {
@@ -39,14 +60,15 @@ const AnchorsContainer: FC<AnchorsProps> = ({ anchors }) => {
                 <div
                   className={`anchors__link ${active === anchor.anchor ? 'anchors__link_active' : ''}`}
                   key={anchor.id}
-                  onClick={(event: MouseEvent<HTMLDivElement>) => onClick(event, anchor.anchor)}
+                  data-id={anchor.id}
+                  onClick={(event: MouseEvent<HTMLDivElement>) => onClick(event, '#' + anchor.anchor)}
                 >
                   {anchor.title}
                 </div>
               );
             })}
           </div>
-        </>
+        </div>
       }
     </div>
   );

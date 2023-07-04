@@ -3,6 +3,10 @@
   padding: 40px 81px 40px 0;
   box-sizing: border-box;
 
+  &__container {
+    position: fixed;
+  }
+
   &__title {
     font-size: 13px;
     font-weight: 700;
