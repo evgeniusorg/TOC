@@ -1,7 +1,7 @@
-import React, { FC } from 'react';
+import React, { FC, memo } from 'react';
 import './style.scss';
 
-export const Main: FC = () => {
+export const MainContainer: FC = () => {
   return (
     <div className="main">
       <h1 id="anchor_id_1">Testing in Maven (anchor 1)</h1>
@@ -66,3 +66,5 @@ export const Main: FC = () => {
     </div>
   );
 };
+
+export const Main = memo(MainContainer);

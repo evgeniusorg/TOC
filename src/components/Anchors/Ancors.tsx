@@ -22,7 +22,6 @@ const AnchorsContainer: FC<AnchorsProps> = ({ anchors }) => {
     const handleObsever = (entries: any) => {
       entries.forEach((entry: any) => {
         if (entry?.isIntersecting && entry?.target?.id) {
-          console.log(entry)
           setActive(entry.target.id);
         }
       })

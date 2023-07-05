@@ -47,6 +47,14 @@ const TocComponent: FC<TocProps> = ({ isLoading, tree, onSetIsLoading }) => {
     searchTimeoutId = setTimeout(() => onFilterTree(value), DEBOUNCE_DELAY);
   }
 
+  useEffect(() => {
+    return () => {
+      if (searchTimeoutId) {
+        clearTimeout(searchTimeoutId);
+      }
+    }
+  }, []);
+
   return (
     <div className="toc">
       <input className="toc__input" name="search" placeholder="Search" onChange={onChangeSearch} value={search} />
